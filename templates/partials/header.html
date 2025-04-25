@@ -5,7 +5,9 @@
 <!-- Begin partial -->
 
 {% macro menu_items() %}
-  {% set menu = menu(module.menu, "site_root").children %}
+
+  <!-- Be sure to change 'Main Nav' to the ID or name of your menu -->
+  {% set menu = menu('Main Nav', "site_root").children %}
 
   {% macro render_link_item(link, depth) %}
     <li class="nav-item {{ 'dropdown' if link.children and depth < module.max_levels }}">
@@ -31,7 +33,11 @@
           {% set depth = depth + 1 %}
           <ul class="dropdown-menu">
             {% for sublink in link.children %}
-              {{ render_link_item(sublink, depth) }}
+              <li>
+                <a class="dropdown-item" href="{{ sublink.url|escape_url }}">
+                  {{ sublink.label|escape_html }}
+                </a>
+              </li>
             {% endfor %}
           </ul>
         {% endif %}
@@ -44,7 +50,7 @@
   {% endfor %}
 {% endmacro %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <!-- Logo -->
     <a class="navbar-brand" href="{{ site_settings.logo_link }}">
