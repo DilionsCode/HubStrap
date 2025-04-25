@@ -4,52 +4,6 @@
 -->
 <!-- Begin partial -->
 
-{% macro menu_items() %}
-
-  <!-- Be sure to change 'Main Nav' to the ID or name of your menu -->
-  {% set menu = menu('Main Nav', "site_root").children %}
-
-  {% macro render_link_item(link, depth) %}
-    <li class="nav-item {{ 'dropdown' if link.children and depth < module.max_levels }}">
-      {% if link.url %}
-        <a class="nav-link 
-          {{ 'dropdown-toggle' if link.children and depth < module.max_levels }}
-          {{ 'active' if link.activeNode }}" 
-          href="{{ link.url|escape_url }}"
-          {% if link.children and depth < module.max_levels %} data-bs-toggle="dropdown" role="button" aria-expanded="false" {% endif %}
-          {% if link.activeNode %} aria-current="page" {% endif %}
-          {% if link.linkTarget %} target="_blank" rel="noopener" {% endif %}>
-            {{ link.label|escape_html }}
-        </a>
-      {% else %}
-        {% if link.children and depth < module.max_levels %}
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false">{{ link.label|escape_html }}</a>
-        {% else %}
-          <span class="nav-link">{{ link.label|escape_html }}</span>
-        {% endif %}
-      {% endif %}
-      {% if link.children %}
-        {% if depth and depth < module.max_levels %}
-          {% set depth = depth + 1 %}
-          <ul class="dropdown-menu">
-            {% for sublink in link.children %}
-              <li>
-                <a class="dropdown-item" href="{{ sublink.url|escape_url }}">
-                  {{ sublink.label|escape_html }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-      {% endif %}
-    </li>
-  {% endmacro %}
-
-  {% for link in menu %}
-    {{ render_link_item(link, 1) }}
-  {% endfor %}
-{% endmacro %}
-
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <!-- Logo -->
@@ -64,7 +18,25 @@
 
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
-        {{ menu_items() }}
+      {% set menu = menu('Main Nav', "site_root").children %}
+      {% for link in menu %}
+        {% if link.children %}
+          <li class="nav-item dropdown">
+        <a class="nav-link{% if link.activeNode %} active{% endif %} dropdown-toggle" href="{{ link.url }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ link.label }}</a>
+        <ul class="dropdown-menu">
+            {% for child in link.children %}
+              <li>
+                <a class="dropdown-item" href="{{ child.url }}">{{ child.label }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link{% if link.activeNode %} active{% endif %}" href="{{ link.url }}">{{ link.label }}</a>
+        </li>
+        {% endif %}
+      {% endfor %}
       </ul>
     </div>
   </div>
