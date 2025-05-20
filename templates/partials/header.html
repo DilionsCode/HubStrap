@@ -7,8 +7,12 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <!-- Logo -->
-    <a class="navbar-brand" href="{{ site_settings.logo_link }}">
+    <a class="navbar-brand d-flex align-items-center" href="{{ site_settings.logo_link }}">
+      {% if logo %}
       {% logo "logo" width="40" %}
+      {% else %}
+      <span class="site-title">{{ site_settings.site_name }}</span>
+      {% endif %}
     </a>
 
     <!-- Toggler -->
